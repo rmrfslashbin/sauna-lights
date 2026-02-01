@@ -19,7 +19,7 @@ All button entities trigger 433MHz RF transmissions to control the sauna LED lig
 | `button.sauna_lights_356f_power` | Power | mdi:power | Toggle lights on/off |
 | `button.sauna_lights_356f_brightness_up` | Brightness Up | mdi:brightness-7 | Increase brightness |
 | `button.sauna_lights_356f_brightness_down` | Brightness Down | mdi:brightness-5 | Decrease brightness |
-| `button.sauna_lights_356f_fast_forward` | Fast Forward | mdi:fast-forward | Fast forward effect sequence |
+| `button.sauna_lights_356f_fast_forward` | Fast Forward | mdi:fast-forward | Fast forward through modes |
 
 ### Primary Colors (4 buttons)
 
@@ -34,37 +34,37 @@ All button entities trigger 433MHz RF transmissions to control the sauna LED lig
 
 | Entity ID | Name | Icon | Function |
 |-----------|------|------|----------|
-| `button.sauna_lights_356f_r_plus_1` | R+1 | mdi:palette-advanced | Red variant 1 |
-| `button.sauna_lights_356f_r_plus_2` | R+2 | mdi:palette-advanced | Red variant 2 |
-| `button.sauna_lights_356f_r_plus_3` | R+3 | mdi:palette-advanced | Red variant 3 |
-| `button.sauna_lights_356f_r_plus_4` | R+4 | mdi:palette-advanced | Red variant 4 |
+| `button.sauna_lights_356f_r_1` | R+1 | mdi:palette-advanced | Red variant 1 |
+| `button.sauna_lights_356f_r_2` | R+2 | mdi:palette-advanced | Red variant 2 |
+| `button.sauna_lights_356f_r_3` | R+3 | mdi:palette-advanced | Red variant 3 |
+| `button.sauna_lights_356f_r_4` | R+4 | mdi:palette-advanced | Red variant 4 |
 
 ### Color Variants - Green Tones (4 buttons)
 
 | Entity ID | Name | Icon | Function |
 |-----------|------|------|----------|
-| `button.sauna_lights_356f_g_plus_1` | G+1 | mdi:palette-advanced | Green variant 1 |
-| `button.sauna_lights_356f_g_plus_2` | G+2 | mdi:palette-advanced | Green variant 2 |
-| `button.sauna_lights_356f_g_plus_3` | G+3 | mdi:palette-advanced | Green variant 3 |
-| `button.sauna_lights_356f_g_plus_4` | G+4 | mdi:palette-advanced | Green variant 4 |
+| `button.sauna_lights_356f_g_1` | G+1 | mdi:palette-advanced | Green variant 1 |
+| `button.sauna_lights_356f_g_2` | G+2 | mdi:palette-advanced | Green variant 2 |
+| `button.sauna_lights_356f_g_3` | G+3 | mdi:palette-advanced | Green variant 3 |
+| `button.sauna_lights_356f_g_4` | G+4 | mdi:palette-advanced | Green variant 4 |
 
 ### Color Variants - Blue Tones (4 buttons)
 
 | Entity ID | Name | Icon | Function |
 |-----------|------|------|----------|
-| `button.sauna_lights_356f_b_plus_1` | B+1 | mdi:palette-advanced | Blue variant 1 |
-| `button.sauna_lights_356f_b_plus_2` | B+2 | mdi:palette-advanced | Blue variant 2 |
-| `button.sauna_lights_356f_b_plus_3` | B+3 | mdi:palette-advanced | Blue variant 3 |
-| `button.sauna_lights_356f_b_plus_4` | B+4 | mdi:palette-advanced | Blue variant 4 |
+| `button.sauna_lights_356f_b_1` | B+1 | mdi:palette-advanced | Blue variant 1 |
+| `button.sauna_lights_356f_b_2` | B+2 | mdi:palette-advanced | Blue variant 2 |
+| `button.sauna_lights_356f_b_3` | B+3 | mdi:palette-advanced | Blue variant 3 |
+| `button.sauna_lights_356f_b_4` | B+4 | mdi:palette-advanced | Blue variant 4 |
 
 ### Color Variants - White Tones (4 buttons)
 
 | Entity ID | Name | Icon | Function |
 |-----------|------|------|----------|
-| `button.sauna_lights_356f_w_plus_1` | W+1 | mdi:palette-advanced | White variant 1 (warm) |
-| `button.sauna_lights_356f_w_plus_2` | W+2 | mdi:palette-advanced | White variant 2 |
-| `button.sauna_lights_356f_w_plus_3` | W+3 | mdi:palette-advanced | White variant 3 |
-| `button.sauna_lights_356f_w_plus_4` | W+4 | mdi:palette-advanced | White variant 4 (cool) |
+| `button.sauna_lights_356f_w_1` | W+1 | mdi:palette-advanced | White variant 1 (warm) |
+| `button.sauna_lights_356f_w_2` | W+2 | mdi:palette-advanced | White variant 2 |
+| `button.sauna_lights_356f_w_3` | W+3 | mdi:palette-advanced | White variant 3 |
+| `button.sauna_lights_356f_w_4` | W+4 | mdi:palette-advanced | White variant 4 (cool) |
 
 ### Color Adjustment (6 buttons)
 
@@ -351,7 +351,7 @@ script:
 | RF Button Entities | 44 | Light Control |
 | System Buttons | 3 | Device Management |
 | Numeric Sensors | 3 | Monitoring |
-| Text Sensors | 8 | Information & Diagnostics |
+| Text Sensors | 8 | Information |
 | Binary Sensors | 1 | Status |
 | Light Entities | 1 | ESP32 Status |
 | **Total** | **60** | **All Entities** |

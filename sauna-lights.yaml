@@ -172,12 +172,14 @@ text_sensor:
       name: "MAC Address"
       icon: "mdi:network-outline"
 
-  # ESPHome Build Version (version number only)
-  - platform: version
+  # ESPHome Build Version (version number only - e.g., "2026.1.3")
+  - platform: template
     name: "ESPHome Build Version"
+    id: esphome_build_version
     icon: "mdi:numeric"
-    hide_timestamp: true
     entity_category: diagnostic
+    lambda: |-
+      return std::string(ESPHOME_VERSION);
 
   # ESPHome Config Hash (configuration fingerprint for detecting changes)
   - platform: template
@@ -186,8 +188,12 @@ text_sensor:
     icon: "mdi:fingerprint"
     entity_category: diagnostic
     lambda: |-
-      return {"0x" + str_sprintf("%08x", esphome::App.get_compilation_time() ^ 0xDEADBEEF)};
-    update_interval: never
+      std::string build_time = std::string(__DATE__) + " " + std::string(__TIME__);
+      uint32_t hash = 0;
+      for (char c : build_time) {
+        hash = hash * 31 + c;
+      }
+      return std::string("0x") + str_sprintf("%08x", hash);
 
   # Firmware Build Date (human-readable date)
   - platform: template
@@ -197,7 +203,6 @@ text_sensor:
     entity_category: diagnostic
     lambda: |-
       return std::string(__DATE__);
-    update_interval: never
 
   # Firmware Build Time (human-readable time)
   - platform: template
@@ -207,7 +212,6 @@ text_sensor:
     entity_category: diagnostic
     lambda: |-
       return std::string(__TIME__);
-    update_interval: never
 
 # Status Binary Sensor
 binary_sensor:
