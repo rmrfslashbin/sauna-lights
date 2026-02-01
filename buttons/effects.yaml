@@ -1,0 +1,74 @@
+# Effect Mode Buttons
+# Category: Auto, Flash, Jump3, Jump7, Fade3, Fade7 (6 effect modes)
+# Using custom PT2262 component
+
+button:
+  # ========================================
+  # Auto Mode
+  # ========================================
+
+  - platform: template
+    name: "Auto"
+    id: auto_mode
+    icon: "mdi:autorenew"
+    on_press:
+      - pt2262.send:
+          id: rf_transmitter
+          code: "0X00Z1XZ0XZ0"
+
+  # ========================================
+  # Flash Effect
+  # ========================================
+
+  - platform: template
+    name: "Flash"
+    id: flash
+    icon: "mdi:flash"
+    on_press:
+      - pt2262.send:
+          id: rf_transmitter
+          code: "0X00Z1XZ0XX0"
+
+  # ========================================
+  # Jump Effects
+  # ========================================
+
+  - platform: template
+    name: "Jump3"
+    id: jump3
+    icon: "mdi:skip-forward"
+    on_press:
+      - pt2262.send:
+          id: rf_transmitter
+          code: "0X00Z1XZ0XXZ"
+
+  - platform: template
+    name: "Jump7"
+    id: jump7
+    icon: "mdi:skip-forward"
+    on_press:
+      - pt2262.send:
+          id: rf_transmitter
+          code: "0X00Z1XZ0XXX"
+
+  # ========================================
+  # Fade Effects
+  # ========================================
+
+  - platform: template
+    name: "Fade3"
+    id: fade3
+    icon: "mdi:gradient-vertical"
+    on_press:
+      - pt2262.send:
+          id: rf_transmitter
+          code: "0X00Z1XZ0XX1"
+
+  - platform: template
+    name: "Fade7"
+    id: fade7
+    icon: "mdi:gradient-vertical"
+    on_press:
+      - pt2262.send:
+          id: rf_transmitter
+          code: "0X00Z1XZ0X10"

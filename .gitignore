@@ -1,0 +1,60 @@
+# ESPHome Secrets & Device-Specific Config
+secrets.yaml
+consts.yaml
+
+# ESPHome Build Artifacts
+.esphome/
+*.bin
+*.elf
+*.map
+
+# Python
+__pycache__/
+**/__pycache__/
+*.pyc
+*.py[cod]
+*$py.class
+.Python
+venv/
+env/
+ENV/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Linux
+*~
+.directory
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*.swn
+.project
+.settings/
+
+# Logs
+*.log
+logs/
+
+# Backups
+*.bak
+*.backup
+*~
+
+# Temporary files
+*.tmp
+.cache/
+
+# Claude Code
+.claude/

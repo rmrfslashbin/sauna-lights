@@ -1,0 +1,21 @@
+# System Control Buttons
+# Category: Device management (restart, factory reset, safe mode)
+
+button:
+  # ========================================
+  # System Controls
+  # ========================================
+
+  - platform: restart
+    name: "Restart"
+    icon: "mdi:restart"
+
+  - platform: factory_reset
+    name: "Factory Reset"
+    icon: "mdi:factory"
+    disabled_by_default: true
+
+  - platform: safe_mode
+    name: "Safe Mode Boot"
+    icon: "mdi:security"
+    disabled_by_default: true

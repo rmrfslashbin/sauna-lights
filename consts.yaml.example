@@ -1,0 +1,23 @@
+# Device Constants Configuration Template
+# Copy this file to consts.yaml and customize for your device
+# These values are imported via substitutions in sauna-lights.yaml
+
+# Device Identification
+# Use a unique name for each device to avoid conflicts
+# Format: <project>-<identifier> (e.g., sauna-lights-356f)
+device_name: sauna-lights-xxxxx
+friendly_name: Sauna Lights XXXXX
+device_comment: RF transmitter for sauna LED control (433 MHz)
+
+# Hardware Configuration
+# Supported boards:
+#   - esp32-s3-devkitc-1 (ESP32-S3-WROOM-1)
+#   - esp32-s3-devkitc-1-n8 (8MB flash variant)
+board_type: esp32-s3-devkitc-1
+
+# Timezone (optional, for time-based automations)
+# timezone: America/New_York
+
+# GPIO Pin Assignments (reference)
+# RF Transmitter: GPIO4
+# Status LED: GPIO38 (onboard RGB on v1.1 board)

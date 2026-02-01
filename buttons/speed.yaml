@@ -1,0 +1,26 @@
+# Speed Control Buttons
+# Category: Quick, Slow
+# Using custom PT2262 component
+
+button:
+  # ========================================
+  # Speed Controls
+  # ========================================
+
+  - platform: template
+    name: "Quick"
+    id: quick
+    icon: "mdi:speedometer"
+    on_press:
+      - pt2262.send:
+          id: rf_transmitter
+          code: "0X00Z1XZ0Z10"
+
+  - platform: template
+    name: "Slow"
+    id: slow
+    icon: "mdi:speedometer-slow"
+    on_press:
+      - pt2262.send:
+          id: rf_transmitter
+          code: "0X00Z1XZ0X00"

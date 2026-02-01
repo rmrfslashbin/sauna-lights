@@ -1,0 +1,60 @@
+# Power and Basic Control Buttons
+# Category: Essential controls for power and brightness
+#
+# Using custom PT2262 component for proper tri-state pulse pair encoding
+# Original remote timing parameters:
+#   Short pulse: 432µs, Long pulse: 1232µs
+#   Sync: 12020µs high, 1192µs low
+#   Gaps: 1192µs (long), 392µs (short)
+#
+# Tri-state encoding (sent directly, no binary conversion):
+#   0 = short/short pulse pair
+#   1 = long/long pulse pair
+#   X = long/short pulse pair (FLOAT)
+#   Z = short/long pulse pair
+
+button:
+  # ========================================
+  # Power Control
+  # ========================================
+
+  - platform: template
+    name: "Power"
+    id: power
+    icon: "mdi:power"
+    on_press:
+      - pt2262.send:
+          id: rf_transmitter
+          code: "0X00Z1XZ00Z0"
+
+  # ========================================
+  # Brightness Controls
+  # ========================================
+
+  - platform: template
+    name: "Brightness Up"
+    id: brightness_up
+    icon: "mdi:brightness-7"
+    on_press:
+      - pt2262.send:
+          id: rf_transmitter
+          code: "0X00Z1XZ000Z"
+
+  - platform: template
+    name: "Brightness Down"
+    id: brightness_down
+    icon: "mdi:brightness-5"
+    on_press:
+      - pt2262.send:
+          id: rf_transmitter
+          code: "0X00Z1XZ000X"
+
+  - platform: template
+    name: "Fast Forward"
+    id: fast_forward
+    icon: "mdi:fast-forward"
+    on_press:
+      - pt2262.send:
+          id: rf_transmitter
+          code: "0X00Z1XZ0001"
+

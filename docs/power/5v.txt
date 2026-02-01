@@ -1,0 +1,4 @@
+RSSI: -0.1 dB SNR: 26.9 dB Noise: -27.1 dB
+RSSI: -0.1 dB SNR: 27.3 dB Noise: -27.4 dB
+RSSI: -0.1 dB SNR: 27.7 dB Noise: -27.8 dB
+RSSI: -0.1 dB SNR: 27.9 dB Noise: -28.0 dB

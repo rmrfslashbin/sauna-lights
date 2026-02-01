@@ -1,0 +1,70 @@
+# Color Adjustment Buttons
+# Category: R-Up/Dn, G-Up/Dn, B-Up/Dn (6 total)
+# Using custom PT2262 component
+
+button:
+  # ========================================
+  # Red Adjustments
+  # ========================================
+
+  - platform: template
+    name: "R-Up"
+    id: r_up
+    icon: "mdi:arrow-up-bold"
+    on_press:
+      - pt2262.send:
+          id: rf_transmitter
+          code: "0X00Z1XZ0ZXZ"
+
+  - platform: template
+    name: "R-Dn"
+    id: r_dn
+    icon: "mdi:arrow-down-bold"
+    on_press:
+      - pt2262.send:
+          id: rf_transmitter
+          code: "0X00Z1XZ0Z1Z"
+
+  # ========================================
+  # Green Adjustments
+  # ========================================
+
+  - platform: template
+    name: "G-Up"
+    id: g_up
+    icon: "mdi:arrow-up-bold"
+    on_press:
+      - pt2262.send:
+          id: rf_transmitter
+          code: "0X00Z1XZ0ZXX"
+
+  - platform: template
+    name: "G-Dn"
+    id: g_dn
+    icon: "mdi:arrow-down-bold"
+    on_press:
+      - pt2262.send:
+          id: rf_transmitter
+          code: "0X00Z1XZ0Z1X"
+
+  # ========================================
+  # Blue Adjustments
+  # ========================================
+
+  - platform: template
+    name: "B-Up"
+    id: b_up
+    icon: "mdi:arrow-up-bold"
+    on_press:
+      - pt2262.send:
+          id: rf_transmitter
+          code: "0X00Z1XZ0ZX1"
+
+  - platform: template
+    name: "B-Dn"
+    id: b_dn
+    icon: "mdi:arrow-down-bold"
+    on_press:
+      - pt2262.send:
+          id: rf_transmitter
+          code: "0X00Z1XZ0Z11"

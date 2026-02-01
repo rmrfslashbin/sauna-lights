@@ -1,0 +1,62 @@
+# DIY Mode Buttons
+# Category: DIY1-6 (6 custom preset modes)
+# Using custom PT2262 component
+
+button:
+  # ========================================
+  # DIY Presets
+  # ========================================
+
+  - platform: template
+    name: "DIY1"
+    id: diy1
+    icon: "mdi:palette-outline"
+    on_press:
+      - pt2262.send:
+          id: rf_transmitter
+          code: "0X00Z1XZ0X0Z"
+
+  - platform: template
+    name: "DIY2"
+    id: diy2
+    icon: "mdi:palette-outline"
+    on_press:
+      - pt2262.send:
+          id: rf_transmitter
+          code: "0X00Z1XZ0X0X"
+
+  - platform: template
+    name: "DIY3"
+    id: diy3
+    icon: "mdi:palette-outline"
+    on_press:
+      - pt2262.send:
+          id: rf_transmitter
+          code: "0X00Z1XZ0X01"
+
+  - platform: template
+    name: "DIY4"
+    id: diy4
+    icon: "mdi:palette-outline"
+    on_press:
+      - pt2262.send:
+          id: rf_transmitter
+          code: "0X00Z1XZ0XZZ"
+
+  - platform: template
+    name: "DIY5"
+    id: diy5
+    icon: "mdi:palette-outline"
+    on_press:
+      - pt2262.send:
+          id: rf_transmitter
+          code: "0X00Z1XZ0XZX"
+
+  - platform: template
+    name: "DIY6"
+    id: diy6
+    icon: "mdi:palette-outline"
+    on_press:
+      - pt2262.send:
+          id: rf_transmitter
+          code: "0X00Z1XZ0XZ1"

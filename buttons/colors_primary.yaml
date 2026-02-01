@@ -1,0 +1,55 @@
+# Primary Color Buttons
+# Category: Red, Green, Blue, White
+#
+# Using custom PT2262 component for proper tri-state pulse pair encoding
+# Original remote timing parameters:
+#   Short pulse: 432µs, Long pulse: 1232µs
+#   Sync: 12020µs high, 1192µs low
+#   Gaps: 1192µs (long), 392µs (short)
+#
+# Tri-state encoding (sent directly, no binary conversion):
+#   0 = short/short pulse pair
+#   1 = long/long pulse pair
+#   X = long/short pulse pair (FLOAT)
+#   Z = short/long pulse pair
+
+button:
+  # ========================================
+  # Primary Colors
+  # ========================================
+
+  - platform: template
+    name: "Red"
+    id: red
+    icon: "mdi:palette"
+    on_press:
+      - pt2262.send:
+          id: rf_transmitter
+          code: "0X00Z1XZ00ZZ"
+
+  - platform: template
+    name: "Green"
+    id: green
+    icon: "mdi:palette"
+    on_press:
+      - pt2262.send:
+          id: rf_transmitter
+          code: "0X00Z1XZ00ZX"
+
+  - platform: template
+    name: "Blue"
+    id: blue
+    icon: "mdi:palette"
+    on_press:
+      - pt2262.send:
+          id: rf_transmitter
+          code: "0X00Z1XZ00Z1"
+
+  - platform: template
+    name: "White"
+    id: white
+    icon: "mdi:palette"
+    on_press:
+      - pt2262.send:
+          id: rf_transmitter
+          code: "0X00Z1XZ00X0"

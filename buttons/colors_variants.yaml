@@ -1,0 +1,164 @@
+# Color Variant Buttons
+# Category: R+1-4, G+1-4, B+1-4, W+1-4 (16 total)
+# Using custom PT2262 component
+
+button:
+  # ========================================
+  # Red Variants
+  # ========================================
+
+  - platform: template
+    name: "R+1"
+    id: r_plus_1
+    icon: "mdi:palette-advanced"
+    on_press:
+      - pt2262.send:
+          id: rf_transmitter
+          code: "0X00Z1XZ00XZ"
+
+  - platform: template
+    name: "R+2"
+    id: r_plus_2
+    icon: "mdi:palette-advanced"
+    on_press:
+      - pt2262.send:
+          id: rf_transmitter
+          code: "0X00Z1XZ001Z"
+
+  - platform: template
+    name: "R+3"
+    id: r_plus_3
+    icon: "mdi:palette-advanced"
+    on_press:
+      - pt2262.send:
+          id: rf_transmitter
+          code: "0X00Z1XZ0Z0Z"
+
+  - platform: template
+    name: "R+4"
+    id: r_plus_4
+    icon: "mdi:palette-advanced"
+    on_press:
+      - pt2262.send:
+          id: rf_transmitter
+          code: "0X00Z1XZ0ZZZ"
+
+  # ========================================
+  # Green Variants
+  # ========================================
+
+  - platform: template
+    name: "G+1"
+    id: g_plus_1
+    icon: "mdi:palette-advanced"
+    on_press:
+      - pt2262.send:
+          id: rf_transmitter
+          code: "0X00Z1XZ00XX"
+
+  - platform: template
+    name: "G+2"
+    id: g_plus_2
+    icon: "mdi:palette-advanced"
+    on_press:
+      - pt2262.send:
+          id: rf_transmitter
+          code: "0X00Z1XZ001X"
+
+  - platform: template
+    name: "G+3"
+    id: g_plus_3
+    icon: "mdi:palette-advanced"
+    on_press:
+      - pt2262.send:
+          id: rf_transmitter
+          code: "0X00Z1XZ0Z0X"
+
+  - platform: template
+    name: "G+4"
+    id: g_plus_4
+    icon: "mdi:palette-advanced"
+    on_press:
+      - pt2262.send:
+          id: rf_transmitter
+          code: "0X00Z1XZ0ZZX"
+
+  # ========================================
+  # Blue Variants
+  # ========================================
+
+  - platform: template
+    name: "B+1"
+    id: b_plus_1
+    icon: "mdi:palette-advanced"
+    on_press:
+      - pt2262.send:
+          id: rf_transmitter
+          code: "0X00Z1XZ00X1"
+
+  - platform: template
+    name: "B+2"
+    id: b_plus_2
+    icon: "mdi:palette-advanced"
+    on_press:
+      - pt2262.send:
+          id: rf_transmitter
+          code: "0X00Z1XZ0011"
+
+  - platform: template
+    name: "B+3"
+    id: b_plus_3
+    icon: "mdi:palette-advanced"
+    on_press:
+      - pt2262.send:
+          id: rf_transmitter
+          code: "0X00Z1XZ0Z01"
+
+  - platform: template
+    name: "B+4"
+    id: b_plus_4
+    icon: "mdi:palette-advanced"
+    on_press:
+      - pt2262.send:
+          id: rf_transmitter
+          code: "0X00Z1XZ0ZZ1"
+
+  # ========================================
+  # White Variants
+  # ========================================
+
+  - platform: template
+    name: "W+1"
+    id: w_plus_1
+    icon: "mdi:palette-advanced"
+    on_press:
+      - pt2262.send:
+          id: rf_transmitter
+          code: "0X00Z1XZ0010"
+
+  - platform: template
+    name: "W+2"
+    id: w_plus_2
+    icon: "mdi:palette-advanced"
+    on_press:
+      - pt2262.send:
+          id: rf_transmitter
+          code: "0X00Z1XZ0Z00"
+
+  - platform: template
+    name: "W+3"
+    id: w_plus_3
+    icon: "mdi:palette-advanced"
+    on_press:
+      - pt2262.send:
+          id: rf_transmitter
+          code: "0X00Z1XZ0ZZ0"
+
+  - platform: template
+    name: "W+4"
+    id: w_plus_4
+    icon: "mdi:palette-advanced"
+    on_press:
+      - pt2262.send:
+          id: rf_transmitter
+          code: "0X00Z1XZ0ZX0"

@@ -1,0 +1,42 @@
+Detected OOK package	2026-01-31 11:01:13
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+time      : 2026-01-31 11:01:13
+model     : Generic-Remote                         House Code: 8313
+Command   : 33           Tri-State : 0X00Z1XZ0X0Z
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+time      : 2026-01-31 11:01:13
+model     : Generic-Remote                         House Code: 8313
+Command   : 33           Tri-State : 0X00Z1XZ0X0Z
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+time      : 2026-01-31 11:01:13
+model     : Generic-Remote                         House Code: 8313
+Command   : 33           Tri-State : 0X00Z1XZ0X0Z
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+time      : 2026-01-31 11:01:13
+model     : Generic-Remote                         House Code: 8313
+Command   : 33           Tri-State : 0X00Z1XZ0X0Z
+Analyzing pulses...
+Total count:  100,  width: 194.03 ms		(48507 S)
+Pulse width distribution:
+ [ 0] count:   68,  width:  424 us [420;444]	( 106 S)
+ [ 1] count:   32,  width: 1224 us [1220;1228]	( 306 S)
+Gap width distribution:
+ [ 0] count:   64,  width: 1200 us [1196;1208]	( 300 S)
+ [ 1] count:   32,  width:  400 us [400;412]	( 100 S)
+ [ 2] count:    3,  width: 12032 us [12032;12036]	(3008 S)
+Pulse period distribution:
+ [ 0] count:   96,  width: 1624 us [1620;1640]	( 406 S)
+ [ 1] count:    3,  width: 12452 us [12452;12456]	(3113 S)
+Pulse timing distribution:
+ [ 0] count:  100,  width:  416 us [400;444]	( 104 S)
+ [ 1] count:   96,  width: 1208 us [1196;1228]	( 302 S)
+ [ 2] count:    4,  width: 12096 us [12032;12284]	(3024 S)
+Level estimates [high, low]:  15353,     22
+RSSI: -0.3 dB SNR: 28.4 dB Noise: -28.7 dB
+Frequency offsets [F1, F2]:   -2144,      0	(-8.2 kHz, +0.0 kHz)
+Guessing modulation: Pulse Width Modulation with multiple packets
+view at https://triq.org/pdv/#AAB021030401A004B82F408181908181818181819090909081819081819081818181908255
+Attempting demodulation... short_width: 424, long_width: 1224, reset_limit: 12040, sync_width: 0
+Use a flex decoder with -X 'n=name,m=OOK_PWM,s=424,l=1224,r=12040,g=1212,t=320,y=0'
+[pulse_slicer_pwm] Analyzer Device
+codes     : {25}df86de8, {25}df86de8, {25}df86de8, {25}df86de8
