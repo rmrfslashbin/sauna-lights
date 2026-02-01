@@ -1,0 +1,66 @@
+name: ESPHome Validate
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  validate:
+    name: Validate ESPHome Configuration
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Cache pip packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install ESPHome
+        run: |
+          pip install --upgrade pip
+          pip install esphome
+
+      - name: Create secrets file for validation
+        run: |
+          cat > secrets.yaml << 'EOF'
+          # Dummy secrets for CI validation
+          wifi_ssid: "TestSSID"
+          wifi_password: "test_password_1234"
+          ap_password: "test_ap_password"
+          api_encryption_key: "test_api_key_1234567890123456789012345678"
+          ota_password: "test_ota_password"
+          EOF
+
+      - name: Create consts file for validation
+        run: |
+          cat > consts.yaml << 'EOF'
+          # Dummy consts for CI validation
+          device_name: sauna-lights-test
+          friendly_name: Sauna Lights Test
+          device_comment: Test configuration for CI validation
+          board_type: esp32-s3-devkitc-1
+          EOF
+
+      - name: Validate ESPHome configuration
+        run: |
+          esphome config sauna-lights.yaml
+
+      - name: Check for compilation errors (config only)
+        run: |
+          echo "✅ Configuration validation passed"
+          echo "Note: Full compilation skipped in CI to save time"
+          echo "Run 'make build' locally to compile firmware"
