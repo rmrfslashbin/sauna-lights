@@ -149,14 +149,20 @@ All button entities trigger 433MHz RF transmissions to control the sauna LED lig
 
 ### Firmware Information
 
-| Entity ID | Name | Icon | Function |
-|-----------|------|------|----------|
-| `text_sensor.sauna_lights_356f_esphome_version` | ESPHome Version | mdi:code-tags | ESPHome version + config hash |
-| `text_sensor.sauna_lights_356f_firmware_build_time` | Firmware Build Time | mdi:clock-check-outline | Firmware compilation timestamp |
+| Entity ID | Name | Icon | Category | Function |
+|-----------|------|------|----------|----------|
+| `text_sensor.sauna_lights_356f_esphome_build_version` | ESPHome Build Version | mdi:numeric | Diagnostic | ESPHome version number |
+| `text_sensor.sauna_lights_356f_esphome_config_hash` | ESPHome Config Hash | mdi:fingerprint | Diagnostic | Configuration fingerprint |
+| `text_sensor.sauna_lights_356f_firmware_build_date` | Firmware Build Date | mdi:calendar-clock | Diagnostic | Date firmware was compiled |
+| `text_sensor.sauna_lights_356f_firmware_build_time` | Firmware Build Time | mdi:clock-outline | Diagnostic | Time firmware was compiled |
 
 **Example Values**:
-- ESPHome Version: `2026.1.3 (config hash 0xd758464d)`
-- Firmware Build Time: `Feb  1 2026 16:04:34`
+- ESPHome Build Version: `2026.1.3`
+- ESPHome Config Hash: `0xf373cfc5`
+- Firmware Build Date: `Feb 1 2026`
+- Firmware Build Time: `16:05:05`
+
+**Note**: These diagnostic entities are set once at boot and help identify the exact firmware build running on the device. The config hash changes when the YAML configuration is modified.
 
 ---
 
@@ -228,6 +234,8 @@ All button entities trigger 433MHz RF transmissions to control the sauna LED lig
 - `sensor.sauna_lights_356f_uptime`
 - `sensor.sauna_lights_356f_internal_temperature`
 - `text_sensor.sauna_lights_356f_ip_address`
+- `text_sensor.sauna_lights_356f_esphome_build_version`
+- `text_sensor.sauna_lights_356f_firmware_build_date`
 - `text_sensor.sauna_lights_356f_firmware_build_time`
 
 #### System Management Card (Collapsed by default)
@@ -343,10 +351,10 @@ script:
 | RF Button Entities | 44 | Light Control |
 | System Buttons | 3 | Device Management |
 | Numeric Sensors | 3 | Monitoring |
-| Text Sensors | 6 | Information |
+| Text Sensors | 8 | Information & Diagnostics |
 | Binary Sensors | 1 | Status |
 | Light Entities | 1 | ESP32 Status |
-| **Total** | **58** | **All Entities** |
+| **Total** | **60** | **All Entities** |
 
 ---
 

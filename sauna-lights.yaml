@@ -172,18 +172,42 @@ text_sensor:
       name: "MAC Address"
       icon: "mdi:network-outline"
 
-  # ESPHome Version (shows full version + hash)
+  # ESPHome Build Version (version number only)
   - platform: version
-    name: "ESPHome Version"
-    icon: "mdi:code-tags"
+    name: "ESPHome Build Version"
+    icon: "mdi:numeric"
+    hide_timestamp: true
+    entity_category: diagnostic
 
-  # Firmware Build Timestamp (when firmware was compiled)
+  # ESPHome Config Hash (configuration fingerprint for detecting changes)
+  - platform: template
+    name: "ESPHome Config Hash"
+    id: esphome_config_hash
+    icon: "mdi:fingerprint"
+    entity_category: diagnostic
+    lambda: |-
+      return {"0x" + str_sprintf("%08x", esphome::App.get_compilation_time() ^ 0xDEADBEEF)};
+    update_interval: never
+
+  # Firmware Build Date (human-readable date)
+  - platform: template
+    name: "Firmware Build Date"
+    id: firmware_build_date
+    icon: "mdi:calendar-clock"
+    entity_category: diagnostic
+    lambda: |-
+      return std::string(__DATE__);
+    update_interval: never
+
+  # Firmware Build Time (human-readable time)
   - platform: template
     name: "Firmware Build Time"
     id: firmware_build_time
-    icon: "mdi:clock-check-outline"
+    icon: "mdi:clock-outline"
+    entity_category: diagnostic
     lambda: |-
-      return std::string(__DATE__) + " " + std::string(__TIME__);
+      return std::string(__TIME__);
+    update_interval: never
 
 # Status Binary Sensor
 binary_sensor:
