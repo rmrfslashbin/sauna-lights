@@ -66,6 +66,17 @@ web_server:
   version: 2
   include_internal: true
 
+# Bluetooth Low Energy Tracker
+esp32_ble_tracker:
+  scan_parameters:
+    interval: 1100ms
+    window: 1100ms
+    active: true
+
+# Bluetooth Proxy
+bluetooth_proxy:
+  active: true
+
 # Time synchronization
 time:
   - platform: homeassistant
