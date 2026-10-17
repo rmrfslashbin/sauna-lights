@@ -17,7 +17,8 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up uv
-        uses: astral-sh/setup-uv@v6
+        # Not mirrored by data.forgejo.org, so fetched from GitHub by full URL
+        uses: https://github.com/astral-sh/setup-uv@v6
         with:
           enable-cache: true
 
