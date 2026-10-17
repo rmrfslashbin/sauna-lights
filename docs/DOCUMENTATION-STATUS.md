@@ -27,7 +27,7 @@
 |------|--------|-------|
 | `sauna-lights.yaml` | ✅ Current | Main ESPHome configuration with PT2262 component |
 | `consts.yaml` | ✅ Current | Device-specific constants |
-| `secrets.yaml` | ✅ Current | WiFi and API credentials (gitignored) |
+| `secrets.yaml.tpl` | ✅ Current | 1Password references; `make secrets` generates gitignored `secrets.yaml` |
 | `buttons/*.yaml` | ✅ Current | All 8 files updated with PT2262 component |
 
 ### Removed Documentation

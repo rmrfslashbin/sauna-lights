@@ -82,13 +82,18 @@ time:
   - platform: homeassistant
     id: homeassistant_time
 
-# Status LED (onboard RGB on GPIO38)
+# Onboard RGB LED (GPIO38 on DevKitC-1 v1.1; GPIO48 on v1.0).
+# It's a WS2812 that needs a data signal: `status_led` only drives the pin
+# high/low, which this LED ignores.
 light:
-  - platform: status_led
+  - platform: esp32_rmt_led_strip
     name: "Status LED"
     id: status_light
     pin: GPIO38
-    internal: false
+    num_leds: 1
+    chipset: WS2812
+    channel_colors: GRB
+    restore_mode: RESTORE_DEFAULT_OFF
 
 # ============================================================================
 # RF TRANSMITTER CONFIGURATION (Core Functionality)

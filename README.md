@@ -47,11 +47,14 @@ This project uses an ESP32-S3-DevKitC-1 development board with a 433MHz RF trans
    make venv
    ```
 
-1. **Configure secrets**:
+1. **Generate secrets** from 1Password (needs the [`op` CLI](https://developer.1password.com/docs/cli/)):
    ```bash
-   cp secrets.yaml.example secrets.yaml
-   # Edit secrets.yaml with your WiFi credentials and API keys
+   make secrets
    ```
+   `secrets.yaml.tpl` holds `op://Secret Keys/...` references; `op inject` writes the
+   real values to `secrets.yaml` (gitignored, mode 600). Build targets regenerate it
+   automatically when the template changes. Values live in the 1Password items
+   `sauna-lights ESPHome` (API key, fallback AP password) and the shared WiFi item.
 
 2. **Configure device** (if needed):
    ```bash
@@ -172,7 +175,7 @@ All buttons use identical PT2262 component implementation with verified tri-stat
 ## Troubleshooting
 
 ### Device won't connect to WiFi
-- Verify credentials in `secrets.yaml`
+- Verify credentials in 1Password, then `make secrets` to regenerate `secrets.yaml`
 - Ensure 2.4GHz network (ESP32 doesn't support 5GHz)
 - Check serial logs: `make logs`
 - Try fallback AP: connect to "sauna-lights-356f Fallback" hotspot
@@ -185,7 +188,7 @@ All buttons use identical PT2262 component implementation with verified tri-stat
 
 ### OTA updates failing
 - Ensure device is on same network
-- Check `api_encryption_key` in `secrets.yaml` matches the key on the device (OTA uses it)
+- Check `api_encryption_key` (1Password item `sauna-lights ESPHome`) matches the key on the device (OTA uses it)
 - Try flashing via USB and retry OTA
 
 ## Contributing

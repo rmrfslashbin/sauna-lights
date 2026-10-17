@@ -1,7 +1,7 @@
 # Makefile for ESPHome Sauna Lights RF Controller
 # Provides convenient shortcuts for common development tasks
 
-.PHONY: help venv validate build compile flash ota ota-ip logs dashboard esphome-ui clean upgrade
+.PHONY: help venv secrets validate build compile flash ota ota-ip logs dashboard esphome-ui clean upgrade
 
 # Configuration
 CONFIG_FILE := sauna-lights.yaml
@@ -21,26 +21,36 @@ help: ## Show this help message
 venv: ## Create uv-managed virtual environment and install dependencies
 	uv sync
 
-validate: ## Validate ESPHome configuration without building
+secrets: ## Regenerate secrets.yaml from 1Password (secrets.yaml.tpl)
+	@rm -f secrets.yaml
+	@$(MAKE) --no-print-directory secrets.yaml
+
+# Generated on demand; refreshed only when the template changes
+secrets.yaml: secrets.yaml.tpl
+	@echo "🔐 Injecting secrets from 1Password..."
+	op inject -f -i $< -o $@
+	@chmod 600 $@
+
+validate: secrets.yaml ## Validate ESPHome configuration without building
 	@echo "🔍 Validating configuration..."
 	$(ESPHOME) config $(CONFIG_FILE)
 
-build: ## Compile firmware (same as compile)
+build: secrets.yaml ## Compile firmware (same as compile)
 	@echo "🔨 Building firmware..."
 	$(ESPHOME) compile $(CONFIG_FILE)
 
 compile: build ## Compile firmware (alias for build)
 
-flash: ## Flash firmware via USB (first-time setup)
+flash: secrets.yaml ## Flash firmware via USB (first-time setup)
 	@echo "📲 Flashing via USB..."
 	@echo "⚠️  Connect ESP32-S3 via USB and put in flash mode if needed"
 	$(ESPHOME) run $(CONFIG_FILE)
 
-ota: ## Update firmware via OTA (automatic mDNS discovery)
+ota: secrets.yaml ## Update firmware via OTA (automatic mDNS discovery)
 	@echo "📡 Updating via OTA (mDNS: $(DEVICE_NAME).local)..."
 	$(ESPHOME) upload $(CONFIG_FILE) --device $(DEVICE_NAME).local
 
-logs: ## View device logs (real-time)
+logs: secrets.yaml ## View device logs (real-time)
 	@echo "📋 Streaming logs from device..."
 	$(ESPHOME) logs $(CONFIG_FILE)
 
@@ -84,7 +94,7 @@ upgrade: ## Update ESPHome to latest version
 check-secrets: ## Verify secrets.yaml exists
 	@if [ ! -f secrets.yaml ]; then \
 		echo "❌ Error: secrets.yaml not found"; \
-		echo "   Copy secrets.yaml.example to secrets.yaml and configure"; \
+		echo "   Run 'make secrets' to generate it from 1Password"; \
 		exit 1; \
 	fi
 	@echo "✅ secrets.yaml exists"
