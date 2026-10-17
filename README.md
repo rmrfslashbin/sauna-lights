@@ -184,7 +184,7 @@ All buttons use identical PT2262 component implementation with verified tri-stat
 
 ### RF signals not working
 - Verify GPIO4 connection to transmitter module
-- Check transmitter power (3.3V, not 5V)
+- Check transmitter power: 5V pin recommended (see [Power Analysis](docs/power/POWER-ANALYSIS.md))
 - Add antenna (17.3cm wire for 433MHz)
 - Increase RF signal repeat count in configuration
 
