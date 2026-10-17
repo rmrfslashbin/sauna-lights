@@ -2,7 +2,7 @@
 
 ## Status: ✅ PRODUCTION READY
 
-**Last Updated**: 2026-02-01
+**Last Updated**: 2026-10-17 (PWM gap timing and frame structure corrected)
 **Build**: 2026-02-01 13:55:20
 **Tested Buttons**: 7 (Brightness Up/Down, DIY1/2, Red/Green/Blue, Power)
 **Deployed Buttons**: All 44
@@ -11,7 +11,7 @@
 
 Successfully implemented custom PT2262 component for ESPHome that:
 - ✅ Generates proper tri-state pulse pair encoding
-- ✅ Matches original remote timing exactly (repeat count: 4)
+- ✅ Matches original remote timing: constant-period PWM, 5 frames per press
 - ✅ Recognized by RTL_433 as "Generic-Remote"
 - ✅ Stable operation without watchdog timeouts
 - ✅ All tested buttons show correct tri-state codes
@@ -36,72 +36,58 @@ Created custom ESPHome component `external_components/pt2262/` that:
 
 ## Critical Implementation Details
 
-### 1. Tri-State Encoding (FINAL - VERIFIED)
+### 1. Constant-Period PWM (CORRECTED 2026-10-17)
+
+Every pulse plus its following gap lasts the same ~1624µs (the capture's
+"Pulse period distribution" has one data bucket). A short pulse is followed by
+a long gap, and a long pulse by a short gap:
 
 ```cpp
-case '0':  // LOW state: short/short
-  tx_high(PULSE_SHORT);  // 432µs
-  tx_low(GAP_SHORT);     // 392µs
-  tx_high(PULSE_SHORT);  // 432µs
-  tx_low(GAP_LONG);      // 1192µs
+void send_short() { tx_high(PULSE_SHORT); tx_low(GAP_LONG);  }  // 420 + 1204µs
+void send_long()  { tx_high(PULSE_LONG);  tx_low(GAP_SHORT); }  // 1216 + 408µs
 
-case '1':  // HIGH state: long/long
-  tx_high(PULSE_LONG);   // 1232µs
-  tx_low(GAP_SHORT);     // 392µs
-  tx_high(PULSE_LONG);   // 1232µs
-  tx_low(GAP_LONG);      // 1192µs
-
-case 'X':  // FLOAT state: long/short
-  tx_high(PULSE_LONG);   // 1232µs
-  tx_low(GAP_SHORT);     // 392µs
-  tx_high(PULSE_SHORT);  // 432µs
-  tx_low(GAP_LONG);      // 1192µs
-
-case 'Z':  // 4th state: short/long
-  tx_high(PULSE_SHORT);  // 432µs
-  tx_low(GAP_SHORT);     // 392µs
-  tx_high(PULSE_LONG);   // 1232µs
-  tx_low(GAP_LONG);      // 1192µs
+case '0': send_short(); send_short(); break;  // LOW
+case '1': send_long();  send_long();  break;  // HIGH
+case 'X': send_long();  send_short(); break;  // FLOAT
+case 'Z': send_short(); send_long();  break;  // 4th state
 ```
 
-### 2. Sync Structure (CRITICAL FIX)
+**Earlier bug:** the first pulse of every symbol was followed by a *short* gap
+and the second by a *long* gap, regardless of pulse width. RTL_433 still
+decoded it (it slices on pulse width only), but the gap mix was wrong: 72 short
+/ 77 long gaps per capture versus the original remote's 35 / 85. The PT2272
+decoder requires two consecutive valid code words, so the lights reacted only
+occasionally and needed several presses.
 
-**WRONG** (causes RTL_433 to not recognize):
+### 2. Frame Structure (CORRECTED 2026-10-17)
+
+The original sends 25 pulses per frame (125 pulses = 5 frames): the 24 data
+pulses, then one short sync pulse and a ~12ms sync gap, back to back.
+
 ```cpp
-tx_high(12020µs);  // Very long pulse
-tx_low(1192µs);    // Short gap
-```
-
-**CORRECT**:
-```cpp
-tx_high(432µs);    // Short pulse
-tx_low(12020µs);   // Very long gap
-```
-
-The sync gap (12020µs) must appear in RTL_433's gap distribution, not pulse distribution!
-
-### 3. Watchdog Handling (CRITICAL FIX)
-
-**WRONG** (causes reboot):
-```cpp
-InterruptLock lock;  // Held for ~345ms total
-for (6 transmissions) {
-  send_code();
+for (repeat) {
+  { InterruptLock lock;  // ~40ms: data + sync pulse only
+    for (symbol : code) send_symbol(symbol);
+    tx_high(PULSE_SHORT); pin low; }
+  delayMicroseconds(SYNC_GAP);  // 12032µs, interrupts enabled
 }
 ```
 
-**CORRECT**:
-```cpp
-for (4 transmissions) {  // Match original remote count
-  {
-    InterruptLock lock;  // Held for ~47ms per transmission
-    send_code();
-  }
-  delayMicroseconds(100);  // Fixed gap, not yield()
-}
-```
+The earlier version sent the sync *before* the data plus an extra trailing
+pulse, giving 26 pulses per frame.
 
-**Critical**: Use `delayMicroseconds(100)` for consistent back-to-back timing, not `yield()` which causes variable delays and LED flashing/retriggering.
+### 3. Watchdog Handling
+
+Holding `InterruptLock` across all repeats (~250ms+) triggers the watchdog and
+reboots. The lock is held per frame and released during the sync gap, where
+timing is not critical. Use `delayMicroseconds()`, not `yield()`: variable
+delays break the back-to-back frame stream and cause retriggering.
+
+### 4. Repeat Count
+
+One quick press of the original remote sends 5 frames
+(`docs/buttons/BRIGHT.txt`), so `repeat: 5`. Raise it if presses are missed;
+lower it if a single press steps brightness more than once.
 
 ## Verified Test Results
 
@@ -117,7 +103,7 @@ for (4 transmissions) {  // Match original remote count
 | Green | `0X00Z1XZ00ZX` | 8313 | 6 | ✅ |
 | Power | `0X00Z1XZ00Z0` | 8313 | 4 | ✅ |
 
-### Pulse Distribution (Verified Correct)
+### Pulse Distribution (pre-2026-10-17 build; gaps were wrong, see §1)
 
 ```
 Pulse width distribution:
@@ -125,8 +111,8 @@ Pulse width distribution:
  [ 1] count:   42-48,   width: 1236 us (long)  ✓
 
 Gap width distribution:
- [ 0] count:   72,  width:  392 us (short) ✓
- [ 1] count:   77,  width: 1192 us (long)  ✓
+ [ 0] count:   72,  width:  392 us (short) ✗ (should be ~35)
+ [ 1] count:   77,  width: 1192 us (long)  ✗ (should be ~85)
  [ 2] count:    5,  width: 12028 us (sync) ✓
 ```
 
@@ -209,11 +195,11 @@ external_components/pt2262/
 ## Key Learnings
 
 1. **PT2262 requires pulse pairs**: Each tri-state symbol = 2 pulses, not 1
-2. **Sync is a gap, not a pulse**: 12020µs must be in gap timing
+2. **Sync is a gap, not a pulse**: ~12ms in gap timing, after the data
 3. **Watchdog timeout is real**: Don't hold InterruptLock > 300ms
-4. **RTL_433 is your friend**: "Generic-Remote" = success, "PWM" = failure
-5. **Timing matters**: Must match original remote within ~10µs
-6. **Repeat count critical**: Match original remote exactly (4 transmissions)
+4. **RTL_433 decoding is not enough**: it slices on pulse width only; compare the *gap* distribution and pulse period too
+5. **Timing matters**: Constant ~1624µs period; each pulse width sets its gap
+6. **Repeat count critical**: Match the original remote (5 frames per press)
 7. **Inter-transmission gaps**: Use fixed `delayMicroseconds()`, not `yield()`
 
 ## References

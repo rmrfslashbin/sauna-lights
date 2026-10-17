@@ -19,74 +19,55 @@ void PT2262Component::dump_config() {
 void PT2262Component::send_tristate(const std::string &code) {
   ESP_LOGD(TAG, "Sending tri-state code: %s", code.c_str());
 
-  // Send the code multiple times (match original remote behavior)
+  // Each frame is the data followed by a short sync pulse and a long sync gap,
+  // repeated back to back like the original remote. The receiver acts only
+  // after consecutive identical frames.
   for (uint8_t i = 0; i < this->repeat_times_; i++) {
     {
-      // Disable interrupts for accurate timing - PER TRANSMISSION to avoid watchdog
+      // Interrupts off for accurate pulse timing; released for the sync gap
       InterruptLock lock;
-
-      // Sync pulse
-      this->send_sync();
-
-      // Send each tri-state symbol as a pulse pair
       for (char symbol : code) {
         this->send_symbol(symbol);
       }
-
-      // Trailing pulse
       this->tx_high(PULSE_SHORT);
-      this->tx_low(GAP_LONG);
+      this->pin_->digital_write(false);
     }
-
-    // Small fixed delay between transmissions (match original remote timing)
-    // No yield() - transmissions should be back-to-back for reliable reception
-    if (i < this->repeat_times_ - 1) {
-      delayMicroseconds(100);  // Minimal gap, just enough to release InterruptLock
-    }
+    // Sync gap timing is not critical, so it runs with interrupts enabled
+    delayMicroseconds(SYNC_GAP);
   }
-
-  // Ensure pin is low after transmission
-  this->pin_->digital_write(false);
 }
 
-void PT2262Component::send_sync() {
-  // PT2262 sync: short pulse followed by very long gap
-  this->tx_high(SYNC_PULSE);
-  this->tx_low(SYNC_GAP);
+void PT2262Component::send_short() {
+  this->tx_high(PULSE_SHORT);
+  this->tx_low(GAP_LONG);
+}
+
+void PT2262Component::send_long() {
+  this->tx_high(PULSE_LONG);
+  this->tx_low(GAP_SHORT);
 }
 
 void PT2262Component::send_symbol(char symbol) {
-  // PT2262 4-state tri-state encoding
-  // Each symbol is encoded as TWO pulses (a pulse pair)
-  // Pattern: pulse1 + SHORT gap, pulse2 + LONG gap
   switch (symbol) {
-    case '0':  // LOW state: short/short (CORRECTED - was backwards!)
-      this->tx_high(PULSE_SHORT);
-      this->tx_low(GAP_SHORT);   // SHORT gap between pulses in pair
-      this->tx_high(PULSE_SHORT);
-      this->tx_low(GAP_LONG);    // LONG gap after symbol complete
+    case '0':  // LOW: short/short
+      this->send_short();
+      this->send_short();
       break;
 
-    case '1':  // HIGH state: long/long (CORRECTED - was backwards!)
-      this->tx_high(PULSE_LONG);
-      this->tx_low(GAP_SHORT);   // SHORT gap between pulses in pair
-      this->tx_high(PULSE_LONG);
-      this->tx_low(GAP_LONG);    // LONG gap after symbol complete
+    case '1':  // HIGH: long/long
+      this->send_long();
+      this->send_long();
       break;
 
-    case 'X':  // FLOAT state: long/short
+    case 'X':  // FLOAT: long/short
     case 'F':  // Alternative notation for FLOAT
-      this->tx_high(PULSE_LONG);
-      this->tx_low(GAP_SHORT);   // SHORT gap between pulses in pair
-      this->tx_high(PULSE_SHORT);
-      this->tx_low(GAP_LONG);    // LONG gap after symbol complete
+      this->send_long();
+      this->send_short();
       break;
 
     case 'Z':  // 4th state: short/long
-      this->tx_high(PULSE_SHORT);
-      this->tx_low(GAP_SHORT);   // SHORT gap between pulses in pair
-      this->tx_high(PULSE_LONG);
-      this->tx_low(GAP_LONG);    // LONG gap after symbol complete
+      this->send_short();
+      this->send_long();
       break;
 
     default:

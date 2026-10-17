@@ -14,26 +14,30 @@ This component implements the PT2262 remote control protocol, commonly used in 4
 
 ## Tri-State Encoding
 
-PT2262 uses 4-state tri-state encoding where each symbol is transmitted as TWO pulses:
+PT2262 is constant-period PWM: every pulse plus its gap lasts ~1624µs, so a
+short pulse is followed by a long gap and a long pulse by a short gap. Each
+tri-state symbol is TWO such pulses:
 
 | Symbol | Encoding | Pulse Pattern |
 |--------|----------|---------------|
-| `0` | LOW | short pulse, short gap, short pulse, long gap |
-| `1` | HIGH | long pulse, short gap, long pulse, long gap |
+| `0` | LOW | short pulse, long gap, short pulse, long gap |
+| `1` | HIGH | long pulse, short gap, long pulse, short gap |
 | `X` | FLOAT | long pulse, short gap, short pulse, long gap |
-| `Z` | 4th state | short pulse, short gap, long pulse, long gap |
+| `Z` | 4th state | short pulse, long gap, long pulse, short gap |
+
+A frame is the 24 data pulses followed by a short sync pulse and a ~12ms sync
+gap; frames are repeated back to back.
 
 ### Timing Parameters
 
 Based on RTL_433 analysis of original remote:
 
 ```cpp
-PULSE_SHORT = 432µs   // Short pulse duration
-PULSE_LONG  = 1232µs  // Long pulse duration
-GAP_SHORT   = 392µs   // Short gap between pulses in a pair
-GAP_LONG    = 1192µs  // Long gap after symbol complete
-SYNC_PULSE  = 432µs   // Sync pulse (short)
-SYNC_GAP    = 12020µs // Sync gap (very long)
+PULSE_SHORT = 420µs   // Short pulse, followed by GAP_LONG
+PULSE_LONG  = 1216µs  // Long pulse, followed by GAP_SHORT
+GAP_SHORT   = 408µs
+GAP_LONG    = 1204µs
+SYNC_GAP    = 12032µs // After the trailing short sync pulse
 ```
 
 ## Configuration
@@ -45,14 +49,14 @@ SYNC_GAP    = 12020µs // Sync gap (very long)
 pt2262:
   id: rf_transmitter
   pin: GPIO4
-  repeat: 4  # Number of transmissions (match original remote)
+  repeat: 5  # Frames per press (one press of the original remote = 5)
 ```
 
 ### Parameters
 
 - **id** (Required): Component ID for referencing in actions
 - **pin** (Required): GPIO pin connected to RF transmitter
-- **repeat** (Optional, default=4): Number of times to transmit each code
+- **repeat** (Optional, default=4, range 1-20): Number of frames per press
 
 ## Usage
 
@@ -80,38 +84,31 @@ button:
 
 ### Signal Structure
 
-Each transmission consists of:
+Each frame consists of:
 
-1. **Sync pulse**: Short pulse (432µs) followed by very long gap (12020µs)
-2. **Symbol pairs**: Each tri-state symbol encoded as 2 pulses
-3. **Trailing pulse**: Short pulse (432µs) followed by long gap (1192µs)
-4. **Repeat**: Entire sequence repeated 6 times (configurable)
+1. **Data**: 12 tri-state symbols = 24 pulses, each pulse+gap ~1624µs
+2. **Sync**: Short pulse (420µs) followed by a very long gap (12032µs)
+3. **Repeat**: Frames sent back to back `repeat` times (default 4; this project uses 5)
 
 ### Watchdog Handling
 
-To prevent ESP32 watchdog timeouts:
-- `InterruptLock` applied **per transmission** (~57ms each)
-- `yield()` called between transmissions
-- Total time: ~345ms for 6 transmissions (safe for watchdog)
+- `InterruptLock` is held per frame for the data and sync pulse only (~40ms)
+- It is released during the 12ms sync gap, which isn't timing-critical
+- Total for 5 frames: ~257ms
 
 ### Example Transmission Timeline
 
 For code `0X00Z1XZ00ZZ` (Red button):
 
 ```
-Transmission 1:
-  [SYNC: 432µs HIGH, 12020µs LOW]
-  [Symbol '0': 432µs HIGH, 392µs LOW, 432µs HIGH, 1192µs LOW]
-  [Symbol 'X': 1232µs HIGH, 392µs LOW, 432µs HIGH, 1192µs LOW]
+Frame 1:
+  [Symbol '0': 420µs HIGH, 1204µs LOW, 420µs HIGH, 1204µs LOW]
+  [Symbol 'X': 1216µs HIGH, 408µs LOW, 420µs HIGH, 1204µs LOW]
   ... (10 more symbols)
-  [TRAILING: 432µs HIGH, 1192µs LOW]
-
-[yield()]
-
-Transmission 2:
+  [SYNC: 420µs HIGH, 12032µs LOW]
+Frame 2:
   [Same sequence...]
-
-... (4 more transmissions)
+... (3 more frames)
 ```
 
 ## Verification
@@ -128,6 +125,24 @@ Tri-State : 0X00Z1XZ00ZZ
 ```
 
 ### Pulse Analysis
+
+Original remote, one press (`docs/buttons/BRIGHT.txt`). Note the single
+~1624µs pulse period; a transmitter matching it should show the same gap mix:
+
+```
+Pulse width distribution:
+ [ 0] count:   90,  width:  420 us (short)
+ [ 1] count:   35,  width: 1216 us (long)
+
+Gap width distribution:
+ [ 0] count:   85,  width: 1204 us (long)
+ [ 1] count:   35,  width:  408 us (short)
+ [ 2] count:    4,  width: 12032 us (sync)
+```
+
+Before the 2026-10-17 fix this component produced the following. The pulses
+matched, but the gaps did not (72 short / 77 long), which made the lights
+respond only intermittently:
 
 ```
 Pulse width distribution:
@@ -188,14 +203,13 @@ ESPHome's `remote_transmitter.transmit_rc_switch_raw` has limitations:
 ### Interrupt Handling
 
 The component uses `InterruptLock` for precise timing but scopes it carefully:
-- Lock duration: ~57ms per transmission
-- Well under 300ms watchdog timeout
-- `yield()` between transmissions keeps system responsive
+- Lock duration: ~40ms per frame
+- Released during each sync gap
 
 ### Performance
 
-- Transmission time: ~57ms per code
-- Total with 6 repeats: ~345ms
+- Frame time: ~51ms (39ms data + 12ms sync)
+- Total with 5 repeats: ~257ms
 - API warning: "took a long time" (expected and safe)
 - No impact on device stability
 

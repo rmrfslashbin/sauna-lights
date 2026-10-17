@@ -103,7 +103,7 @@ light:
 pt2262:
   id: rf_transmitter
   pin: GPIO4
-  repeat: 4  # Match original remote (verified from RTL_433 captures)
+  repeat: 5  # One press of the original remote = 5 frames (docs/buttons/BRIGHT.txt)
 
 # Keep remote_transmitter for reference (currently unused)
 # remote_transmitter:
