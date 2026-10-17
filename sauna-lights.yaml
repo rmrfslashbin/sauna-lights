@@ -36,10 +36,10 @@ api:
     key: !secret api_encryption_key
   reboot_timeout: 15min
 
-# Enable OTA updates
+# Enable OTA updates (Noise-encrypted with the api key; uploads without it are refused)
 ota:
   - platform: esphome
-    password: !secret ota_password
+    encryption: {}
 
 # Safe mode configuration
 safe_mode:

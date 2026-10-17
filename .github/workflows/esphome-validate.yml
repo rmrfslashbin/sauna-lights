@@ -16,23 +16,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - name: Set up uv
+        uses: astral-sh/setup-uv@v6
         with:
-          python-version: '3.11'
+          enable-cache: true
 
-      - name: Cache pip packages
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
-
-      - name: Install ESPHome
-        run: |
-          pip install --upgrade pip
-          pip install esphome
+      - name: Install ESPHome (pinned by uv.lock)
+        run: uv sync --locked
 
       - name: Create secrets file for validation
         run: |
@@ -41,8 +31,7 @@ jobs:
           wifi_ssid: "TestSSID"
           wifi_password: "test_password_1234"
           ap_password: "test_ap_password"
-          api_encryption_key: "test_api_key_1234567890123456789012345678"
-          ota_password: "test_ota_password"
+          api_encryption_key: "Y2ktZHVtbXkta2V5LW5vdC1hLXJlYWwtc2VjcmV0ISE="  # base64 of a dummy 32-byte string
           EOF
 
       - name: Create consts file for validation
@@ -57,7 +46,7 @@ jobs:
 
       - name: Validate ESPHome configuration
         run: |
-          esphome config sauna-lights.yaml
+          uv run esphome config sauna-lights.yaml
 
       - name: Check for compilation errors (config only)
         run: |

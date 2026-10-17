@@ -185,7 +185,7 @@ All buttons use identical PT2262 component implementation with verified tri-stat
 
 ### OTA updates failing
 - Ensure device is on same network
-- Check OTA password in `secrets.yaml`
+- Check `api_encryption_key` in `secrets.yaml` matches the key on the device (OTA uses it)
 - Try flashing via USB and retry OTA
 
 ## Contributing
