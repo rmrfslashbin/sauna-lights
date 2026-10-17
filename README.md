@@ -84,17 +84,19 @@ This project uses an ESP32-S3-DevKitC-1 development board with a 433MHz RF trans
 
 ## Usage
 
-### Home Assistant Services
+### Home Assistant Buttons
 
-After adding to Home Assistant, 44 services will be available:
+After adding to Home Assistant, each of the 44 remote keys is a button entity
+(the HA device is renamed "Sauna Lights", so IDs have no `_356f_`):
 
-- `esphome.sauna_lights_356f_brightness_up` - Increase brightness
-- `esphome.sauna_lights_356f_brightness_down` - Decrease brightness
-- `esphome.sauna_lights_356f_red` - Set color to red
-- `esphome.sauna_lights_356f_diy1` - Activate DIY preset 1
-- ...and 40 more button commands
+- `button.sauna_lights_brightness_up` - Increase brightness
+- `button.sauna_lights_brightness_down` - Decrease brightness
+- `button.sauna_lights_red` - Set color to red
+- `button.sauna_lights_diy1` - Activate DIY preset 1
+- ...and 40 more
 
-See [docs/HA-ENTITIES.md](docs/HA-ENTITIES.md) for complete service documentation and Home Assistant entity reference.
+Press one with the `button.press` action. See [docs/HA-ENTITIES.md](docs/HA-ENTITIES.md)
+for the full entity reference.
 
 ### Development Workflow
 
