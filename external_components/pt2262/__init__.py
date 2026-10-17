@@ -44,6 +44,7 @@ async def to_code(config):
             cv.Required(CONF_CODE): cv.templatable(cv.string),
         }
     ),
+    synchronous=True,  # play() transmits inline and returns when done
 )
 async def pt2262_send_to_code(config, action_id, template_arg, args):
     """Generate code for pt2262.send action."""

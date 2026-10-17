@@ -69,8 +69,8 @@ web_server:
 # Bluetooth Low Energy Tracker
 esp32_ble_tracker:
   scan_parameters:
-    interval: 1100ms
-    window: 1100ms
+    interval: 320ms
+    window: 300ms  # <=600ms so BLE doesn't starve WiFi on the shared radio
     active: true
 
 # Bluetooth Proxy
@@ -204,7 +204,7 @@ text_sensor:
       for (char c : build_time) {
         hash = hash * 31 + c;
       }
-      return std::string("0x") + str_sprintf("%08x", hash);
+      return std::string("0x") + str_sprintf("%08" PRIx32, hash);
 
   # Firmware Build Date (human-readable date)
   - platform: template

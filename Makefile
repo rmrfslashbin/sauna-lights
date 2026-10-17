@@ -1,11 +1,12 @@
 # Makefile for ESPHome Sauna Lights RF Controller
 # Provides convenient shortcuts for common development tasks
 
-.PHONY: help validate build compile flash ota ota-ip logs dashboard esphome-ui clean upgrade
+.PHONY: help venv validate build compile flash ota ota-ip logs dashboard esphome-ui clean upgrade
 
 # Configuration
 CONFIG_FILE := sauna-lights.yaml
 DEVICE_NAME := sauna-lights-356f
+ESPHOME := uv run esphome
 
 # Default target
 help: ## Show this help message
@@ -17,28 +18,31 @@ help: ## Show this help message
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | \
 		awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2}'
 
+venv: ## Create uv-managed virtual environment and install dependencies
+	uv sync
+
 validate: ## Validate ESPHome configuration without building
 	@echo "🔍 Validating configuration..."
-	esphome config $(CONFIG_FILE)
+	$(ESPHOME) config $(CONFIG_FILE)
 
 build: ## Compile firmware (same as compile)
 	@echo "🔨 Building firmware..."
-	esphome compile $(CONFIG_FILE)
+	$(ESPHOME) compile $(CONFIG_FILE)
 
 compile: build ## Compile firmware (alias for build)
 
 flash: ## Flash firmware via USB (first-time setup)
 	@echo "📲 Flashing via USB..."
 	@echo "⚠️  Connect ESP32-S3 via USB and put in flash mode if needed"
-	esphome run $(CONFIG_FILE)
+	$(ESPHOME) run $(CONFIG_FILE)
 
 ota: ## Update firmware via OTA (automatic mDNS discovery)
 	@echo "📡 Updating via OTA (mDNS: $(DEVICE_NAME).local)..."
-	esphome upload $(CONFIG_FILE) --device $(DEVICE_NAME).local
+	$(ESPHOME) upload $(CONFIG_FILE) --device $(DEVICE_NAME).local
 
 logs: ## View device logs (real-time)
 	@echo "📋 Streaming logs from device..."
-	esphome logs $(CONFIG_FILE)
+	$(ESPHOME) logs $(CONFIG_FILE)
 
 dashboard: ## Generate Home Assistant entity list
 	@echo "📊 Generating Home Assistant entity list..."
@@ -62,7 +66,7 @@ dashboard: ## Generate Home Assistant entity list
 esphome-ui: ## Start ESPHome dashboard web UI
 	@echo "🌐 Starting ESPHome dashboard..."
 	@echo "🔗 Open http://localhost:6052 in your browser"
-	esphome dashboard .
+	$(ESPHOME) dashboard .
 
 clean: ## Remove build artifacts
 	@echo "🧹 Cleaning build artifacts..."
@@ -71,9 +75,10 @@ clean: ## Remove build artifacts
 
 upgrade: ## Update ESPHome to latest version
 	@echo "⬆️  Updating ESPHome..."
-	pip install -U esphome
+	uv lock --upgrade-package esphome
+	uv sync
 	@echo "✅ ESPHome updated"
-	@esphome version
+	@$(ESPHOME) version
 
 # Development helpers
 check-secrets: ## Verify secrets.yaml exists
@@ -105,4 +110,4 @@ quick-update: check-config build ota ## Quick build and OTA update
 
 # Version info
 version: ## Show ESPHome version
-	@esphome version
+	@$(ESPHOME) version

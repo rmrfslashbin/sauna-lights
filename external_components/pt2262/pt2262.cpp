@@ -13,7 +13,7 @@ void PT2262Component::dump_config() {
   ESP_LOGCONFIG(TAG, "PT2262 Transmitter:");
   LOG_PIN("  Pin: ", this->pin_);
   ESP_LOGCONFIG(TAG, "  Repeat: %d times", this->repeat_times_);
-  ESP_LOGCONFIG(TAG, "  Timing: short=%dus, long=%dus", PULSE_SHORT, PULSE_LONG);
+  ESP_LOGCONFIG(TAG, "  Timing: short=%" PRIu32 "us, long=%" PRIu32 "us", PULSE_SHORT, PULSE_LONG);
 }
 
 void PT2262Component::send_tristate(const std::string &code) {

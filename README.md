@@ -35,12 +35,17 @@ This project uses an ESP32-S3-DevKitC-1 development board with a 433MHz RF trans
 
 ### Prerequisites
 
-- ESPHome installed (`pip install esphome`)
+- [uv](https://docs.astral.sh/uv/) — ESPHome is pinned in `uv.lock` and installed into `.venv` by `make venv`
 - USB cable for initial flashing
 - 433MHz RF transmitter module
 - WiFi network credentials
 
 ### Setup
+
+0. **Install ESPHome** (into the project `.venv`):
+   ```bash
+   make venv
+   ```
 
 1. **Configure secrets**:
    ```bash
