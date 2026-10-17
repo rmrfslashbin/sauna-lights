@@ -1,7 +1,7 @@
 [project]
 name = "sauna-lights"
 version = "0.1.0"
-requires-python = ">=3.11"
+requires-python = ">=3.12"  # ESPHome 2026.9 needs 3.12; 3.11 would lock an old ESPHome
 dependencies = [
     "esphome",
 ]

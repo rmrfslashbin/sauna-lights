@@ -1,0 +1,7 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "description": "esphome is unpinned in pyproject.toml, so Renovate has no version to bump; weekly lock file maintenance refreshes uv.lock instead (ESPHome and transitive security fixes).",
+  "lockFileMaintenance": {
+    "enabled": true
+  }
+}
